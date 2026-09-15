@@ -1,0 +1,28 @@
+Canary
+Let a small share of users try the new version before expanding.
+
+Silent walkthrough. Four steps, 15 seconds per step. At most one request marker moves once in each step; no information depends on following it.
+
+00:00:00.000 - 00:00:15.000
+1. Begin with the proven version
+All live traffic goes to v1. The new version is ready for a limited release.
+Diagram: New version: 0% of traffic.
+
+00:00:15.000 - 00:00:30.000
+2. Send a small sample to v2
+Route an illustrative 5% of traffic to v2. Most requests still go to v1.
+Diagram: New version: 5% of traffic.
+
+00:00:30.000 - 00:00:45.000
+3. Expand after checking results
+If the release looks healthy, increase its share. Pause or roll back if error rates or latency worsen.
+Diagram: New version: 25% of traffic.
+
+00:00:45.000 - 00:01:00.000
+4. Promote the new version
+After the safety checks pass, route all traffic to v2. The canary has become the main version.
+Diagram: New version: 100% of traffic.
+
+Takeaway: Start with a small audience and watch for regressions.
+Useful for: Finding production problems while limiting how many users encounter them.
+Watch for: Use a representative sample and compare error rates and latency. Percentages here are illustrative.

@@ -1,0 +1,17 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:15.000
+1. Begin with the proven version
+All live traffic goes to v1. The new version is ready for a limited release.
+
+00:00:15.000 --> 00:00:30.000
+2. Send a small sample to v2
+Route an illustrative 5% of traffic to v2. Most requests still go to v1.
+
+00:00:30.000 --> 00:00:45.000
+3. Expand after checking results
+If the release looks healthy, increase its share. Pause or roll back if error rates or latency worsen.
+
+00:00:45.000 --> 00:01:00.000
+4. Promote the new version
+After the safety checks pass, route all traffic to v2. The canary has become the main version.

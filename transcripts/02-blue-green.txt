@@ -1,0 +1,28 @@
+Blue-green
+Prepare a second environment, then switch the traffic destination.
+
+Silent walkthrough. Four steps, 15 seconds per step. At most one request marker moves once in each step; no information depends on following it.
+
+00:00:00.000 - 00:00:15.000
+1. Blue serves the live traffic
+The Blue environment runs v1. Green is separate and does not receive live requests.
+Diagram: Live destination: Blue.
+
+00:00:15.000 - 00:00:30.000
+2. Prepare and check Green
+Deploy v2 to Green and test it there. Users still reach Blue.
+Diagram: Green is ready, but not live.
+
+00:00:30.000 - 00:00:45.000
+3. Switch the route
+Change the routing configuration to send new live requests to Green. Blue stays available as a standby.
+Diagram: Live destination: Green.
+
+00:00:45.000 - 00:01:00.000
+4. Keep a rollback window
+Observe Green before retiring Blue. Routing back is an option only if data and other changes remain compatible.
+Diagram: Green is live; Blue is on standby.
+
+Takeaway: Two environments; one receives live traffic at a time.
+Useful for: A clear cutover with the previous environment available for a rollback window.
+Watch for: You need duplicate capacity. Database changes and shared state can complicate rollback.

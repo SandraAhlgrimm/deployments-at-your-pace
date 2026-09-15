@@ -1,0 +1,19 @@
+1
+00:00:00,000 --> 00:00:15,000
+1. Keep the live path on v1
+The current version handles the real request and answers the user. The shadow version is not serving users.
+
+2
+00:00:15,000 --> 00:00:30,000
+2. Copy a request to v2
+Mirror the request to v2 for observation. This is an additional copy, not a split of the live traffic.
+
+3
+00:00:30,000 --> 00:00:45,000
+3. Compare privately
+Inspect the shadow output and performance. Its result can be compared internally, but it is not sent to the user.
+
+4
+00:00:45,000 --> 00:01:00,000
+4. Keep the response boundary
+The user still receives only v1's response. Moving users to v2 would require a separate release decision.

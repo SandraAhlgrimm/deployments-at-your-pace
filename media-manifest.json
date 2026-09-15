@@ -1,0 +1,198 @@
+{
+  "title": "Eight deployment patterns, without the visual overload",
+  "publicSite": "https://sandraahlgrimm.github.io/deployments-at-your-pace/",
+  "article": "article.md",
+  "preview": "index.html",
+  "companion": "interactive.html",
+  "cover": {
+    "path": "images/cover.png",
+    "width": 1920,
+    "height": 1080
+  },
+  "videos": [
+    {
+      "id": "rolling",
+      "title": "Rolling",
+      "stem": "01-rolling",
+      "video": "videos/01-rolling.mp4",
+      "preview": "images/01-rolling.png",
+      "poster": "images/01-rolling-poster.png",
+      "captions": {
+        "vtt": "captions/01-rolling.vtt",
+        "srt": "captions/01-rolling.srt"
+      },
+      "transcript": "transcripts/01-rolling.txt",
+      "interactive": "interactive.html?pattern=rolling",
+      "alt": "Rolling deployment halfway through: instances 01 and 02 run v2, while 03 and 04 still run v1. All four are connected to the router.",
+      "width": 1080,
+      "height": 1350,
+      "seconds": 60,
+      "stepSeconds": 15,
+      "fps": 24,
+      "frames": 1440,
+      "audio": false,
+      "bytes": 433706
+    },
+    {
+      "id": "blue-green",
+      "title": "Blue-green",
+      "stem": "02-blue-green",
+      "video": "videos/02-blue-green.mp4",
+      "preview": "images/02-blue-green.png",
+      "poster": "images/02-blue-green-poster.png",
+      "captions": {
+        "vtt": "captions/02-blue-green.vtt",
+        "srt": "captions/02-blue-green.srt"
+      },
+      "transcript": "transcripts/02-blue-green.txt",
+      "interactive": "interactive.html?pattern=blue-green",
+      "alt": "Blue-green after cutover: Blue v1 is on standby with 0% of new live traffic; Green v2 receives 100%.",
+      "width": 1080,
+      "height": 1350,
+      "seconds": 60,
+      "stepSeconds": 15,
+      "fps": 24,
+      "frames": 1440,
+      "audio": false,
+      "bytes": 458540
+    },
+    {
+      "id": "canary",
+      "title": "Canary",
+      "stem": "03-canary",
+      "video": "videos/03-canary.mp4",
+      "preview": "images/03-canary.png",
+      "poster": "images/03-canary-poster.png",
+      "captions": {
+        "vtt": "captions/03-canary.vtt",
+        "srt": "captions/03-canary.srt"
+      },
+      "transcript": "transcripts/03-canary.txt",
+      "interactive": "interactive.html?pattern=canary",
+      "alt": "Canary at an illustrative intermediate stage: 75% of traffic goes to v1 and 25% goes to v2.",
+      "width": 1080,
+      "height": 1350,
+      "seconds": 60,
+      "stepSeconds": 15,
+      "fps": 24,
+      "frames": 1440,
+      "audio": false,
+      "bytes": 454698
+    },
+    {
+      "id": "feature-flag",
+      "title": "Feature flag",
+      "stem": "04-feature-flag",
+      "video": "videos/04-feature-flag.mp4",
+      "preview": "images/04-feature-flag.png",
+      "poster": "images/04-feature-flag-poster.png",
+      "captions": {
+        "vtt": "captions/04-feature-flag.vtt",
+        "srt": "captions/04-feature-flag.srt"
+      },
+      "transcript": "transcripts/04-feature-flag.txt",
+      "interactive": "interactive.html?pattern=feature-flag",
+      "alt": "The deployed app contains the feature code. Its flag is OFF for everyone else and ON only for test users.",
+      "width": 1080,
+      "height": 1350,
+      "seconds": 60,
+      "stepSeconds": 15,
+      "fps": 24,
+      "frames": 1440,
+      "audio": false,
+      "bytes": 526280
+    },
+    {
+      "id": "progressive",
+      "title": "Progressive",
+      "stem": "05-progressive",
+      "video": "videos/05-progressive.mp4",
+      "preview": "images/05-progressive.png",
+      "poster": "images/05-progressive-poster.png",
+      "captions": {
+        "vtt": "captions/05-progressive.vtt",
+        "srt": "captions/05-progressive.srt"
+      },
+      "transcript": "transcripts/05-progressive.txt",
+      "interactive": "interactive.html?pattern=progressive",
+      "alt": "Progressive delivery at 25% exposure to v2. A checks-pass gate permits expansion while 75% of traffic remains on v1.",
+      "width": 1080,
+      "height": 1350,
+      "seconds": 60,
+      "stepSeconds": 15,
+      "fps": 24,
+      "frames": 1440,
+      "audio": false,
+      "bytes": 514349
+    },
+    {
+      "id": "shadow",
+      "title": "Shadow",
+      "stem": "06-shadow",
+      "video": "videos/06-shadow.mp4",
+      "preview": "images/06-shadow.png",
+      "poster": "images/06-shadow-poster.png",
+      "captions": {
+        "vtt": "captions/06-shadow.vtt",
+        "srt": "captions/06-shadow.srt"
+      },
+      "transcript": "transcripts/06-shadow.txt",
+      "interactive": "interactive.html?pattern=shadow",
+      "alt": "The original request goes to production v1, which answers the user. A dashed copy path goes to shadow v2 for observation only; its response is not returned to the user.",
+      "width": 1080,
+      "height": 1350,
+      "seconds": 60,
+      "stepSeconds": 15,
+      "fps": 24,
+      "frames": 1440,
+      "audio": false,
+      "bytes": 553499
+    },
+    {
+      "id": "ab",
+      "title": "A/B",
+      "stem": "07-ab",
+      "video": "videos/07-ab.mp4",
+      "preview": "images/07-ab.png",
+      "poster": "images/07-ab-poster.png",
+      "captions": {
+        "vtt": "captions/07-ab.vtt",
+        "srt": "captions/07-ab.srt"
+      },
+      "transcript": "transcripts/07-ab.txt",
+      "interactive": "interactive.html?pattern=ab",
+      "alt": "Stable experiment groups: group A receives variant A and group B receives variant B. Both groups are evaluated using the same outcome.",
+      "width": 1080,
+      "height": 1350,
+      "seconds": 60,
+      "stepSeconds": 15,
+      "fps": 24,
+      "frames": 1440,
+      "audio": false,
+      "bytes": 525063
+    },
+    {
+      "id": "immutable",
+      "title": "Immutable",
+      "stem": "08-immutable",
+      "video": "videos/08-immutable.mp4",
+      "preview": "images/08-immutable.png",
+      "poster": "images/08-immutable-poster.png",
+      "captions": {
+        "vtt": "captions/08-immutable.vtt",
+        "srt": "captions/08-immutable.srt"
+      },
+      "transcript": "transcripts/08-immutable.txt",
+      "interactive": "interactive.html?pattern=immutable",
+      "alt": "Fresh v2 infrastructure serves 100% of new traffic while the unchanged old v1 instances drain. The old instances were not patched into v2.",
+      "width": 1080,
+      "height": 1350,
+      "seconds": 60,
+      "stepSeconds": 15,
+      "fps": 24,
+      "frames": 1440,
+      "audio": false,
+      "bytes": 491476
+    }
+  ]
+}

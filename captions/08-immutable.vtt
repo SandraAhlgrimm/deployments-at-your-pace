@@ -1,0 +1,17 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:15.000
+1. Start with the existing instances
+The current infrastructure runs v1 and serves all traffic. It will not be modified into v2.
+
+00:00:15.000 --> 00:00:30.000
+2. Create fresh infrastructure
+Provision new instances from the v2 image. Validate them before they receive live traffic.
+
+00:00:30.000 --> 00:00:45.000
+3. Move traffic to the new instances
+After validation, route traffic to the fresh v2 instances. The old instances can drain existing requests.
+
+00:00:45.000 --> 00:01:00.000
+4. Retire the old instances
+Once they are no longer needed, remove the old infrastructure. No existing instance was patched into the new version.

@@ -1,0 +1,17 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:15.000
+1. Choose stages and guardrails
+Set the rollout stages and the health conditions required to move between them.
+
+00:00:15.000 --> 00:00:30.000
+2. Start with limited exposure
+Give v2 a small share of traffic. Observe errors and latency before allowing another increase.
+
+00:00:30.000 --> 00:00:45.000
+3. Let checks decide
+In this example the checks pass, so the controller expands to 25%. A failed check would pause or roll back instead.
+
+00:00:45.000 --> 00:01:00.000
+4. Complete a healthy rollout
+Continue through the approved stages until v2 serves everyone. Keep monitoring after promotion.

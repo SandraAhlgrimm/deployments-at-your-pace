@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="en" data-motion="off">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Deployment patterns, at your pace</title>
+    <style>:root {
+    color-scheme: light;
+    --paper: #f5f4ef;
+    --surface: #ffffff;
+    --diagram: #f8faf8;
+    --ink: #253931;
+    --muted: #586960;
+    --line: #dce3dc;
+    --accent: #315e4f;
+    --current-fill: #f2f5fa;
+    --current-line: #b7c5d7;
+    --current-ink: #405c7c;
+    --new-fill: #edf5ef;
+    --new-line: #a8c7b6;
+    --new-ink: #2c604b;
+    font-family: var(--font-sans, "Segoe UI", system-ui, sans-serif);
+    font-size: 15px;
+    line-height: 1.55;
+    background: var(--paper);
+    color: var(--ink);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); }
+button, select, input { font: inherit; }
+button, select, a { -webkit-tap-highlight-color: transparent; }
+button, select { color: var(--ink); }
+button, summary, select, .motion-control { cursor: pointer; }
+button { border: 1px solid transparent; }
+button:disabled { opacity: .45; cursor: default; }
+button:hover:not(:disabled) { filter: brightness(.97); }
+button:focus-visible, select:focus-visible, a:focus-visible, summary:focus-visible,
+input:focus-visible + .switch-track {
+    outline: 3px solid #487063;
+    outline-offset: 4px;
+}
+[hidden] { display: none !important; }
+.shell { max-width: 1180px; margin: 0 auto; padding: 36px 34px 22px; }
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 30px; }
+.eyebrow { font-size: 10px; letter-spacing: .16em; font-weight: 650; margin: 0; }
+.page-header .eyebrow { display: flex; align-items: center; gap: 10px; color: var(--accent); }
+.brand-mark { display: grid; grid-template-columns: 5px 5px; gap: 3px; }
+.brand-mark i { width: 5px; height: 5px; border-radius: 1px; background: var(--accent); }
+.brand-mark i:last-child { background: #a8bfb1; }
+h1 { margin: 10px 0 4px; font-size: clamp(24px, 3.1vw, 34px); font-weight: 570; line-height: 1.2; letter-spacing: -.035em; }
+.intro { color: var(--muted); margin: 8px 0 0; font-size: 14px; }
+.download-link { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; font-size: 12px; text-decoration: none; color: var(--muted); margin-top: 3px; padding: 8px 0 8px 8px; }
+.download-link svg, button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.workspace { display: grid; grid-template-columns: 184px minmax(0, 1fr); gap: 32px; align-items: start; }
+.pattern-nav { padding-top: 4px; }
+.nav-label { font-size: 9px; letter-spacing: .11em; color: var(--muted); margin: 0 0 15px 12px; font-weight: 650; }
+.pattern-link { display: flex; align-items: center; gap: 13px; width: 100%; background: transparent; border: 1px solid transparent; border-radius: 9px; text-align: left; padding: 11px 12px; margin: 3px 0; color: var(--muted); }
+.pattern-link span { font-size: 11px; font-variant-numeric: tabular-nums; color: #69766e; }
+.pattern-link[aria-current="page"] { background: #e5ede5; border-color: #d6e1d7; color: #254d3c; font-weight: 600; }
+.pattern-link[aria-current="page"] span { color: #375e4b; }
+.nav-note { display: flex; align-items: flex-start; gap: 12px; border-top: 1px solid var(--line); margin: 25px 12px 0; padding-top: 22px; color: var(--muted); font-size: 12px; }
+.nav-note p { margin: 0; }
+.still-symbol { font-size: 12px; letter-spacing: 2px; line-height: 21px; }
+.lesson { min-width: 0; }
+.compact-nav { display: none; }
+.lesson-card { border: 1px solid var(--line); border-radius: 17px; background: var(--surface); overflow: hidden; }
+.lesson-header { display: flex; gap: 16px; justify-content: space-between; padding: 25px 28px 20px; }
+.category { margin: 0 0 5px; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; font-weight: 650; color: var(--muted); }
+h2 { margin: 0; font-size: 28px; line-height: 1.2; font-weight: 600; letter-spacing: -.025em; }
+h2:focus { outline: none; }
+.pattern-summary { font-size: 14px; margin: 9px 0 0; max-width: 550px; line-height: 1.55; color: var(--muted); min-height: 44px; }
+.pattern-number { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; padding-top: 3px; }
+.diagram-wrap { margin: 0 16px; background: var(--diagram); border: 1px solid #e8ece5; border-radius: 12px; padding: 14px 10px 13px; }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin: 0 9px 2px; font-size: 11px; color: #52665b; min-height: 20px; }
+.legend > span { display: flex; align-items: center; gap: 6px; }
+.legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; }
+.legend-current { background: #8199b7; }
+.legend-new { background: #81ac94; }
+.legend .motion-status { margin-left: auto; color: #5c6d62; font-size: 10px; }
+.diagram svg { display: block; width: 100%; height: auto; overflow: visible; }
+.edge path { stroke: #47766a; stroke-width: 1.6; }
+.edge.idle path { stroke: #a8b4b0; }
+.edge-label-bg { fill: var(--diagram); }
+.edge-label { font-family: inherit; font-size: 15px; font-weight: 600; fill: #456258; }
+.edge.idle .edge-label { fill: #69766f; }
+.node-box { fill: white; stroke: #cfdad1; stroke-width: 1.4; }
+.node-title { font-size: 18px; font-weight: 600; fill: #2c4237; }
+.node-detail { font-size: 15px; fill: #53665b; }
+.node-tag { fill: #edf1ed; }
+.node-tag-text { font-size: 14px; font-weight: 600; fill: #4b6353; }
+.node.current .node-box { fill: var(--current-fill); stroke: var(--current-line); }
+.node.current .node-tag { fill: #e1e9f4; }
+.node.current .node-tag-text { fill: var(--current-ink); }
+.node.new .node-box { fill: var(--new-fill); stroke: var(--new-line); }
+.node.new .node-tag { fill: #dbece1; }
+.node.new .node-tag-text { fill: var(--new-ink); }
+.diagram-note rect { fill: #f0f3ed; stroke: #dae2d5; }
+.diagram-note text { fill: #4d6254; }
+.flow-marker { fill: #315e4f; stroke: var(--diagram); stroke-width: 2; }
+figcaption { text-align: center; color: #4c6656; font-size: 11px; min-height: 18px; padding: 0 8px; }
+.step-panel { padding: 21px 28px 17px; }
+.step-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+#step-count { font-size: 10px; font-weight: 650; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+.step-dots { display: flex; gap: 7px; }
+.step-dot { position: relative; display: grid; place-items: center; height: 29px; width: 29px; border-radius: 50%; background: transparent; color: #66766a; font-size: 11px; border-color: #dbe3da; }
+.step-dot[aria-current="step"] { background: var(--accent); color: white; border-color: var(--accent); }
+.step-copy { min-height: 112px; }
+h3 { margin: 0 0 6px; font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -.012em; }
+.step-copy p { margin: 0; font-size: 14px; line-height: 1.65; color: var(--muted); max-width: 640px; }
+.transport { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 10px; margin-top: 14px; }
+.transport button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 43px; border-radius: 8px; font-size: 13px; font-weight: 550; padding: 9px 10px; white-space: nowrap; }
+.secondary-button { background: white; border-color: var(--line); }
+.play-button { background: #edf2eb; border-color: #dce5d8; color: #36553e; }
+.play-button[aria-pressed="true"] { background: #e3ebe0; border-color: #b7cab1; }
+.next-button { background: var(--accent); color: white; }
+.playback-note { margin: 12px 0 0; font-size: 11px; text-align: center; color: var(--muted); min-height: 18px; }
+.settings-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; padding: 18px 5px 16px; font-size: 11px; color: var(--muted); }
+.motion-control { position: relative; display: flex; align-items: center; gap: 9px; min-height: 32px; }
+.motion-control input { position: absolute; width: 32px; height: 22px; margin: 0; opacity: 0; cursor: pointer; }
+.switch-track { height: 18px; width: 31px; border: 1px solid #a8b8a9; border-radius: 12px; background: #e0e6dc; flex: none; }
+.switch-track::after { content: ""; display: block; height: 12px; width: 12px; border-radius: 50%; margin: 2px; background: #758b77; }
+.motion-control input:checked + .switch-track { background: #d4e3d4; border-color: #718e72; }
+.motion-control input:checked + .switch-track::after { margin-left: 15px; background: #395f3e; }
+.motion-control input:disabled { cursor: not-allowed; }
+.setting-value { color: #385440; font-weight: 600; margin-left: 3px; }
+.pace-control { display: flex; align-items: center; gap: 8px; }
+.pace-control select { background: var(--paper); border: 1px solid #ced8cb; border-radius: 6px; padding: 5px 23px 5px 8px; font-size: 11px; min-height: 32px; }
+.system-note { font-size: 11px; color: var(--muted); margin: -2px 5px 16px; }
+.takeaway { display: flex; align-items: flex-start; gap: 14px; padding: 17px 20px; background: #eaf0e6; border: 1px solid #dce6d5; border-radius: 11px; }
+.takeaway-mark { width: 22px; height: 22px; border: 1px solid #9db191; color: #4b6840; border-radius: 7px; line-height: 18px; text-align: center; margin-top: 3px; flex: none; }
+.takeaway .eyebrow { font-size: 9px; color: #526b48; margin-bottom: 3px; }
+#takeaway-text { font-size: 14px; margin: 0; color: #304c32; }
+.context { margin-top: 15px; font-size: 12px; color: var(--muted); }
+.context summary { padding: 6px 2px; width: fit-content; }
+.context > div { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; border-top: 1px solid var(--line); margin-top: 10px; padding: 12px 2px; }
+.context p { margin: 0; }
+.context strong { display: block; color: #374f3e; font-size: 11px; margin-bottom: 5px; }
+.page-footer { display: flex; justify-content: space-between; gap: 24px; margin: 30px 0 0; border-top: 1px solid var(--line); padding-top: 16px; font-size: 10px; color: #657162; }
+.page-footer p { margin: 0; }
+.page-footer p:last-child { white-space: nowrap; }
+.error-banner { padding: 12px; margin-top: 16px; background: #fff3e5; border: 1px solid #d6b68d; color: #654421; border-radius: 8px; font-size: 13px; }
+.skip-link { position: fixed; left: 15px; top: -100px; padding: 10px 15px; background: white; color: var(--ink); z-index: 2; }
+.skip-link:not(:focus) { clip-path: inset(50%); width: 1px; height: 1px; overflow: hidden; white-space: nowrap; }
+.skip-link:focus { top: 12px; }
+@media (max-width: 980px) {
+    .shell { padding: 24px; max-width: 820px; }
+    .workspace { display: block; }
+    .pattern-nav { display: none; }
+    .compact-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .compact-nav label { font-size: 11px; color: var(--muted); margin-right: 4px; }
+    .compact-nav select { background: white; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; flex: 1; min-width: 0; font-size: 13px; min-height: 39px; }
+    .icon-button { display: grid; place-items: center; width: 39px; height: 39px; background: transparent; border: 1px solid #d0dacd; border-radius: 8px; }
+    .page-header { margin-bottom: 22px; }
+}
+@media (max-width: 600px) {
+    .shell { padding: 20px 13px; }
+    .page-header { gap: 10px; }
+    .page-header .eyebrow { font-size: 9px; }
+    h1 { font-size: 25px; max-width: 240px; }
+    .intro { font-size: 12px; }
+    .download-link { font-size: 10px; gap: 3px; }
+    .download-link svg { width: 14px; height: 14px; }
+    .lesson-header { padding: 20px 18px 17px; }
+    h2 { font-size: 26px; }
+    .pattern-summary { font-size: 13px; min-height: 60px; }
+    .diagram-wrap { margin: 0 9px; padding: 12px 4px; }
+    .legend { font-size: 10px; gap: 9px; margin: 0 8px 8px; }
+    .legend .motion-status { font-size: 9px; }
+    .node-title { font-size: 19px; }
+    .node-detail { font-size: 16px; }
+    .node-tag-text { font-size: 15px; }
+    .edge-label { font-size: 17px; }
+    .step-panel { padding: 19px 18px 15px; }
+    .step-copy { min-height: 145px; }
+    h3 { font-size: 17px; }
+    .step-copy p { font-size: 13px; }
+    .transport { gap: 6px; }
+    .transport button { font-size: 11px; padding: 8px 5px; gap: 4px; }
+    .transport button svg { width: 15px; height: 15px; }
+    .settings-bar { gap: 10px; padding: 15px 2px; }
+    .settings-bar, .pace-control select { font-size: 10px; }
+    .pace-control { gap: 5px; }
+    .takeaway { padding: 15px; gap: 11px; }
+    #takeaway-text { font-size: 13px; }
+    .context > div { grid-template-columns: 1fr; gap: 15px; }
+    .page-footer { display: block; font-size: 9px; line-height: 1.7; margin-top: 23px; }
+    .page-footer p + p { margin-top: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media (forced-colors: active) {
+    .node-box, .node-tag, .diagram-note rect { fill: Canvas !important; stroke: CanvasText !important; }
+    .node text, .diagram-note text, .edge text { fill: CanvasText !important; }
+    .edge path { stroke: CanvasText !important; }
+    .step-dot[aria-current="step"] { outline: 2px solid Highlight; }
+}
+</style>
+</head>
+<body>
+    <a class="skip-link" href="#pattern-title">Skip to the current pattern</a>
+    <main class="shell">
+        <header class="page-header">
+            <div>
+                <p class="eyebrow"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span> THE QUIET GUIDE</p>
+                <h1>Deployments, at your pace.</h1>
+                <p class="intro">One pattern. One step. Room to understand.</p>
+            </div>
+            <a class="download-link" id="download-link" href="interactive.html" download="deployment-patterns.html">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9m-3-3 3 3 3-3M4 13v4h12v-4"/></svg>
+                Save HTML
+            </a>
+        </header>
+        <div class="workspace">
+            <nav class="pattern-nav" aria-label="Deployment patterns">
+                <p class="nav-label">EXPLORE THE PATTERNS</p>
+                <div id="pattern-list"></div>
+                <div class="nav-note"><span class="still-symbol" aria-hidden="true">II</span><p>Nothing autoplays.<br>Stay on any step.</p></div>
+            </nav>
+            <div class="lesson">
+                <div class="compact-nav">
+                    <label for="pattern-select">Pattern</label>
+                    <select id="pattern-select"></select>
+                    <button class="icon-button" id="previous-pattern" aria-label="Previous pattern">
+                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 5-5 5 5 5"/></svg>
+                    </button>
+                    <button class="icon-button" id="next-pattern" aria-label="Next pattern">
+                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5"/></svg>
+                    </button>
+                </div>
+                <article class="lesson-card" aria-labelledby="pattern-title">
+                    <header class="lesson-header">
+                        <div>
+                            <p class="category" id="pattern-category"></p>
+                            <h2 id="pattern-title" tabindex="-1"></h2>
+                            <p class="pattern-summary" id="pattern-summary"></p>
+                        </div>
+                        <span class="pattern-number" id="pattern-number"></span>
+                    </header>
+                    <figure class="diagram-wrap">
+                        <div class="legend" aria-label="Diagram legend">
+                            <span><i class="legend-current" aria-hidden="true"></i><span id="legend-current-label">Current / v1</span></span>
+                            <span><i class="legend-new" aria-hidden="true"></i><span id="legend-new-label">New / v2</span></span>
+                            <span class="motion-status" id="motion-status">Still diagrams</span>
+                        </div>
+                        <div class="diagram" id="diagram"></div>
+                        <figcaption id="diagram-caption"></figcaption>
+                    </figure>
+                    <section class="step-panel" aria-label="Current step">
+                        <div class="step-meta">
+                            <span id="step-count"></span>
+                            <div class="step-dots" id="step-dots" aria-label="Choose a step"></div>
+                        </div>
+                        <div class="step-copy" aria-live="polite" aria-atomic="true">
+                            <h3 id="step-title"></h3>
+                            <p id="step-body"></p>
+                        </div>
+                        <div class="transport">
+                            <button class="secondary-button" id="back-step">
+                                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 5-5 5 5 5"/></svg>Back
+                            </button>
+                            <button class="play-button" id="play" aria-label="Play steps slowly" aria-pressed="false"></button>
+                            <button class="next-button" id="next-step">
+                                Next step<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5"/></svg>
+                            </button>
+                        </div>
+                        <p class="playback-note" id="playback-note" role="status">Paused. Move through the steps whenever you are ready.</p>
+                    </section>
+                </article>
+                <div class="settings-bar" aria-label="Playback preferences">
+                    <label class="motion-control">
+                        <input type="checkbox" role="switch" id="motion-toggle">
+                        <span class="switch-track" aria-hidden="true"></span>
+                        <span>Gentle motion <span class="setting-value" id="motion-value">off</span></span>
+                    </label>
+                    <label class="pace-control" for="pace">Playback pace
+                        <select id="pace"><option value="6">6 sec / step</option><option value="10">10 sec / step</option></select>
+                    </label>
+                </div>
+                <p id="reduced-motion-note" class="system-note" hidden>Your system requests reduced motion. Moving markers are disabled.</p>
+                <aside class="takeaway">
+                    <span class="takeaway-mark" aria-hidden="true">=</span>
+                    <div><p class="eyebrow">THE IDEA TO KEEP</p><p id="takeaway-text"></p></div>
+                </aside>
+                <details class="context">
+                    <summary>When to use it &amp; what to watch</summary>
+                    <div><p><strong>Useful for</strong><span id="useful-text"></span></p><p><strong>Watch for</strong><span id="watch-text"></span></p></div>
+                </details>
+            </div>
+        </div>
+        <footer class="page-footer">
+            <p>These approaches can overlap. A canary, for example, can run on immutable infrastructure.</p>
+            <p>No loops. No sound. No rush.</p>
+        </footer>
+        <p class="error-banner" id="error-message" role="alert" hidden></p>
+        <noscript>This explainer needs JavaScript for its manual step controls. It does not load any external resources.</noscript>
+    </main>
+    <script>globalThis.__EXPLAINER__ = {"revision":0,"view":{"pattern":"rolling","step":0,"motion":false,"pace":6},"connected":false};</script>
+    <script type="module">const PATTERNS = [
+    {
+        id: "rolling", name: "Rolling", category: "Replace in small batches",
+        summary: "Update instances gradually, while the service stays available.",
+        takeaway: "Old and new versions coexist during the rollout.",
+        useful: "Routine service updates when you do not need a second complete environment.",
+        watch: "Versions must work together. Use readiness checks and keep enough healthy capacity.",
+        steps: [
+            { title: "Start with the current version", body: "All four healthy instances serve v1. The router sends requests to the available instances.", versions: [1, 1, 1, 1], label: "0 of 4 instances updated" },
+            { title: "Replace one instance", body: "Bring a v2 instance into service after it is healthy. The other three still run v1.", versions: [2, 1, 1, 1], label: "1 of 4 instances updated" },
+            { title: "Continue in small batches", body: "After health checks pass, replace another instance. Both versions continue serving requests.", versions: [2, 2, 1, 1], label: "2 of 4 instances updated" },
+            { title: "Finish the rollout", body: "The remaining instances are replaced. Every healthy instance now serves v2.", versions: [2, 2, 2, 2], label: "4 of 4 instances updated" },
+        ],
+    },
+    {
+        id: "blue-green", name: "Blue-green", category: "Switch environments",
+        summary: "Prepare a second environment, then switch the traffic destination.",
+        takeaway: "Two environments; one receives live traffic at a time.",
+        useful: "A clear cutover with the previous environment available for a rollback window.",
+        watch: "You need duplicate capacity. Database changes and shared state can complicate rollback.",
+        steps: [
+            { title: "Blue serves the live traffic", body: "The Blue environment runs v1. Green is separate and does not receive live requests.", traffic: [100, 0], tags: ["Live", "Preparing"], label: "Live destination: Blue" },
+            { title: "Prepare and check Green", body: "Deploy v2 to Green and test it there. Users still reach Blue.", traffic: [100, 0], tags: ["Live", "Ready"], label: "Green is ready, but not live" },
+            { title: "Switch the route", body: "Change the routing configuration to send new live requests to Green. Blue stays available as a standby.", traffic: [0, 100], tags: ["Standby", "Live"], label: "Live destination: Green" },
+            { title: "Keep a rollback window", body: "Observe Green before retiring Blue. Routing back is an option only if data and other changes remain compatible.", traffic: [0, 100], tags: ["Standby", "Live"], label: "Green is live; Blue is on standby" },
+        ],
+    },
+    {
+        id: "canary", name: "Canary", category: "Limit initial exposure",
+        summary: "Let a small share of users try the new version before expanding.",
+        takeaway: "Start with a small audience and watch for regressions.",
+        useful: "Finding production problems while limiting how many users encounter them.",
+        watch: "Use a representative sample and compare error rates and latency. Percentages here are illustrative.",
+        steps: [
+            { title: "Begin with the proven version", body: "All live traffic goes to v1. The new version is ready for a limited release.", traffic: [100, 0], label: "New version: 0% of traffic" },
+            { title: "Send a small sample to v2", body: "Route an illustrative 5% of traffic to v2. Most requests still go to v1.", traffic: [95, 5], label: "New version: 5% of traffic" },
+            { title: "Expand after checking results", body: "If the release looks healthy, increase its share. Pause or roll back if error rates or latency worsen.", traffic: [75, 25], label: "New version: 25% of traffic" },
+            { title: "Promote the new version", body: "After the safety checks pass, route all traffic to v2. The canary has become the main version.", traffic: [0, 100], label: "New version: 100% of traffic" },
+        ],
+    },
+    {
+        id: "feature-flag", name: "Feature flag", category: "Separate deploy from release",
+        summary: "Ship the code first. Decide who can use the feature with a flag.",
+        takeaway: "Deploying code does not have to expose a feature.",
+        useful: "Separating release timing from deployment, or enabling a feature for a chosen group.",
+        watch: "Flags do not replace authorization. Test both flag states and remove obsolete flags.",
+        steps: [
+            { title: "Begin without the new feature", body: "The existing app is running. Neither group can use the feature yet.", version: 1, flags: [false, false], label: "Feature is not released" },
+            { title: "Deploy code with the flag off", body: "The app now contains the feature code, but its flag is OFF for everyone. There is still no user-visible release.", version: 2, flags: [false, false], label: "Code deployed; feature still OFF" },
+            { title: "Enable it for a selected group", body: "Turn the flag ON for test users. Everyone runs the deployed app, but only the chosen group sees the feature.", version: 2, flags: [false, true], label: "Feature ON for test users only" },
+            { title: "Release when you are ready", body: "Enable the flag for everyone. This changes feature availability without requiring another code deployment.", version: 2, flags: [true, true], label: "Feature ON for both groups" },
+        ],
+    },
+    {
+        id: "progressive", name: "Progressive", category: "Expand through safety gates",
+        summary: "Increase exposure in stages, using checks to decide what happens next.",
+        takeaway: "Measured checks control whether the rollout advances.",
+        useful: "Coordinating staged traffic shifts, feature flags, and automated rollout decisions.",
+        watch: "Define meaningful thresholds and a tested pause or rollback policy. Automation needs good signals.",
+        steps: [
+            { title: "Choose stages and guardrails", body: "Set the rollout stages and the health conditions required to move between them.", traffic: [100, 0], gate: "Policy ready", label: "Plan the checks before expanding" },
+            { title: "Start with limited exposure", body: "Give v2 a small share of traffic. Observe errors and latency before allowing another increase.", traffic: [95, 5], gate: "Observe errors and latency", label: "New version: 5% of traffic" },
+            { title: "Let checks decide", body: "In this example the checks pass, so the controller expands to 25%. A failed check would pause or roll back instead.", traffic: [75, 25], gate: "Checks pass: allow expansion", label: "New version: 25% of traffic" },
+            { title: "Complete a healthy rollout", body: "Continue through the approved stages until v2 serves everyone. Keep monitoring after promotion.", traffic: [0, 100], gate: "Rollout complete; keep observing", label: "New version: 100% of traffic" },
+        ],
+    },
+    {
+        id: "shadow", name: "Shadow", category: "Observe without serving",
+        summary: "Send a copy to the new version, but keep user responses on the current one.",
+        takeaway: "Shadow responses are never returned to users.",
+        useful: "Observing a new implementation with realistic traffic before letting it serve users.",
+        watch: "Isolate or disable side effects in the shadow path. Copies must not charge, email, or mutate live data.",
+        steps: [
+            { title: "Keep the live path on v1", body: "The current version handles the real request and answers the user. The shadow version is not serving users.", mirrored: false, label: "Only v1 answers the user" },
+            { title: "Copy a request to v2", body: "Mirror the request to v2 for observation. This is an additional copy, not a split of the live traffic.", mirrored: true, label: "Original to v1; a copy to v2" },
+            { title: "Compare privately", body: "Inspect the shadow output and performance. Its result can be compared internally, but it is not sent to the user.", mirrored: true, label: "Observe the copy, not a second user response" },
+            { title: "Keep the response boundary", body: "The user still receives only v1's response. Moving users to v2 would require a separate release decision.", mirrored: true, label: "v1 still serves every user response" },
+        ],
+    },
+    {
+        id: "ab", name: "A/B", category: "Compare user outcomes",
+        summary: "Give stable user groups different experiences and compare a chosen outcome.",
+        takeaway: "An experiment about outcomes, not just rollout safety.",
+        useful: "Learning how two experiences affect a defined metric, such as task completion.",
+        watch: "Keep assignments stable, choose the metric in advance, and allow enough data for a reliable comparison.",
+        steps: [
+            { title: "Assign stable groups", body: "Assign users to A or B. The example uses equal groups, but the split can be different.", focus: "both", label: "Stable assignment, not random on every request" },
+            { title: "Group A gets experience A", body: "Users assigned to A keep seeing variant A. Record the outcome you chose before the experiment.", focus: "a", label: "Group A stays with variant A" },
+            { title: "Group B gets experience B", body: "Users assigned to B keep seeing variant B. Measure the same outcome for a fair comparison.", focus: "b", label: "Group B stays with variant B" },
+            { title: "Compare the outcomes", body: "Compare the groups with an appropriate analysis. This diagram does not assume that either variant wins.", focus: "results", label: "Compare evidence before choosing a winner" },
+        ],
+    },
+    {
+        id: "immutable", name: "Immutable", category: "Replace the infrastructure",
+        summary: "Create fresh instances for the new version instead of changing old ones in place.",
+        takeaway: "Replace the instances; do not patch them in place.",
+        useful: "Repeatable, auditable deployments built from a known image or configuration.",
+        watch: "Keep persistent data outside disposable instances. Immutable infrastructure can use rolling or blue-green routing.",
+        steps: [
+            { title: "Start with the existing instances", body: "The current infrastructure runs v1 and serves all traffic. It will not be modified into v2.", traffic: [100, 0], tags: ["Serving v1", "Not created"], label: "Existing instances remain unchanged" },
+            { title: "Create fresh infrastructure", body: "Provision new instances from the v2 image. Validate them before they receive live traffic.", traffic: [100, 0], tags: ["Serving v1", "Validate v2"], label: "New image, new instances" },
+            { title: "Move traffic to the new instances", body: "After validation, route traffic to the fresh v2 instances. The old instances can drain existing requests.", traffic: [0, 100], tags: ["Draining", "Serving v2"], label: "Fresh v2 instances are serving" },
+            { title: "Retire the old instances", body: "Once they are no longer needed, remove the old infrastructure. No existing instance was patched into the new version.", traffic: [0, 100], tags: ["Retired", "Serving v2"], label: "Old instances retired; new instances remain" },
+        ],
+    },
+];
+
+const DEFAULT_VIEW = Object.freeze({ pattern: "rolling", step: 0, motion: false, pace: 6 });
+const VIEW_PROPERTIES = {
+    pattern: { type: "string", enum: PATTERNS.map((pattern) => pattern.id) },
+    step: { type: "integer", minimum: 0, maximum: 3 },
+    motion: { type: "boolean" },
+    pace: { type: "integer", enum: [6, 10] },
+};
+
+function patchView(current, changes) {
+    if (!changes || typeof changes !== "object" || Array.isArray(changes)) throw new TypeError("View changes must be an object.");
+    for (const key of Object.keys(changes)) {
+        if (!Object.hasOwn(VIEW_PROPERTIES, key)) throw new TypeError(`Unknown view field: ${key}`);
+    }
+    const view = { ...current, ...changes };
+    if (changes.pattern !== undefined && changes.pattern !== current.pattern && changes.step === undefined) view.step = 0;
+    const pattern = PATTERNS.find((item) => item.id === view.pattern);
+    if (!pattern) throw new RangeError("Choose one of the eight deployment patterns.");
+    if (!Number.isInteger(view.step) || view.step < 0 || view.step >= pattern.steps.length) throw new RangeError("The step is outside this pattern.");
+    if (typeof view.motion !== "boolean") throw new TypeError("Motion must be true or false.");
+    if (![6, 10].includes(view.pace)) throw new RangeError("Playback pace must be 6 or 10 seconds.");
+    return view;
+}
+
+function getSnapshot(view) {
+    const validated = patchView(DEFAULT_VIEW, view);
+    const pattern = PATTERNS.find((item) => item.id === validated.pattern);
+    return { pattern, stage: pattern.steps[validated.step], stepCount: pattern.steps.length, view: validated };
+}
+
+function escapeText(value) {
+    return String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+}
+
+function renderDiagram(view, compact = false, { dense = false } = {}) {
+    const { pattern, stage } = getSnapshot(view);
+    const nodes = [];
+    const edges = [];
+    const width = compact ? 420 : 800;
+    const height = compact ? (dense ? 380 : 435) : 380;
+    const addNode = (id, label, detail, tag, tone, geometry) => {
+        nodes.push({ id, label, detail, tag, tone, ...geometry });
+    };
+    const input = compact ? { x: 210, y: 40, w: 180, h: 62 } : { x: 96, y: 166, w: 160, h: 88 };
+    const router = compact ? { x: 210, y: dense ? 128 : 142, w: 188, h: 80 } : { x: 292, y: 166, w: 166, h: 96 };
+    const target = (index) => compact
+        ? { x: index === 0 ? 108 : 312, y: dense ? 259 : 283, w: 186, h: 114 }
+        : { x: 631, y: index === 0 ? 86 : 244, w: 232, h: 112 };
+    const gate = compact ? { x: 210, y: dense ? 350 : 398, w: 376, h: dense ? 46 : 54 } : { x: 465, y: 351, w: 596, h: 52 };
+    const addEdge = (from, to, label = "", active = true, dashed = false, trace = false) => edges.push({ from, to, label, active, dashed, trace });
+    addNode("users", "Users", "", "Requests", "neutral", input);
+    addNode("router", "Router", "", "Routes traffic", "neutral", router);
+    addEdge("users", "router");
+
+    if (pattern.id === "rolling") {
+        stage.versions.forEach((version, index) => {
+            const geometry = compact
+                ? { x: 54 + index * 104, y: dense ? 263 : 281, w: 86, h: 100 }
+                : { x: 631, y: 47 + index * 87, w: 218, h: 70 };
+            addNode(`server${index}`, compact ? `0${index + 1}` : `Instance 0${index + 1}`, "", `v${version}`, version === 2 ? "new" : "current", geometry);
+            addEdge("router", `server${index}`, "", true, false, index === Math.min(view.step, 3));
+        });
+    } else if (pattern.id === "feature-flag") {
+        nodes[1] = { ...nodes[1], label: `App v${stage.version}`, detail: "", tag: stage.version === 2 ? "Feature code inside" : "Existing code", tone: "neutral" };
+        ["Everyone else", "Test users"].forEach((label, index) => {
+            addNode(`group${index}`, label, "Feature", stage.flags[index] ? "ON" : "OFF", stage.flags[index] ? "new" : "current", target(index));
+            addEdge("router", `group${index}`, "", true, false, index === (view.step === 2 ? 1 : 0));
+        });
+        addNode("note", "Flag rules control visibility, not the deployed version.", "", "", "note", gate);
+    } else if (pattern.id === "shadow") {
+        addNode("live", "Production v1", "Answers the user", "Live response", "current", target(0));
+        addNode("shadow", "Shadow v2", stage.mirrored ? "No user response" : "Not receiving copies", stage.mirrored ? "Observe only" : "Waiting", stage.mirrored ? "new" : "neutral", target(1));
+        addEdge("router", "live", "Original", true, false, view.step === 0 || view.step === 3);
+        addEdge("router", "shadow", stage.mirrored ? "Copy" : "No copies", stage.mirrored, true, view.step === 1 || view.step === 2);
+        addNode("note", "Shadow side effects must be isolated or disabled.", "", "", "note", gate);
+    } else if (pattern.id === "ab") {
+        nodes[1] = { ...nodes[1], label: "Assignment", tag: "Keep groups stable" };
+        ["A", "B"].forEach((variant, index) => {
+            const active = stage.focus === "both" || stage.focus === "results" || stage.focus === variant.toLowerCase();
+            addNode(`variant${index}`, `Variant ${variant}`, `For group ${variant}`, "Same experience", index === 0 ? "current" : "new", target(index));
+            addEdge("router", `variant${index}`, `Group ${variant}`, active, false, stage.focus === variant.toLowerCase());
+        });
+        addNode("note", "Compare the same outcome for both groups.", "", "", "note", gate);
+    } else {
+        const labels = pattern.id === "blue-green" ? ["Blue / v1", "Green / v2"]
+            : pattern.id === "immutable" ? ["Existing / v1", "Fresh / v2"] : ["Current / v1", "New / v2"];
+        labels.forEach((label, index) => {
+            const tag = stage.tags?.[index] ?? (stage.traffic[index] ? "Serving" : "Ready");
+            const tone = tag === "Retired" || tag === "Not created" ? "neutral" : index === 0 ? "current" : "new";
+            addNode(`pool${index}`, label, pattern.id === "blue-green" ? "Environment" : pattern.id === "immutable" ? "Infrastructure" : "Version pool", tag, tone, target(index));
+            addEdge("router", `pool${index}`, `${stage.traffic[index]}%`, stage.traffic[index] > 0, stage.traffic[index] === 0, index === (view.step >= 2 || pattern.id === "canary" || pattern.id === "progressive" ? 1 : 0));
+        });
+        if (pattern.id === "progressive") addNode("note", stage.gate, "", "", "note", gate);
+    }
+
+    const edgeMarkup = edges.map((edge, index) => {
+        const a = nodes.find((node) => node.id === edge.from);
+        const b = nodes.find((node) => node.id === edge.to);
+        let path;
+        let labelX;
+        let labelY;
+        if (compact) {
+            const startY = a.y + a.h / 2;
+            const endY = b.y - b.h / 2;
+            const middleY = (startY + endY) / 2;
+            path = `M ${a.x} ${startY} C ${a.x} ${middleY}, ${b.x} ${middleY}, ${b.x} ${endY}`;
+            labelX = b.x;
+            labelY = middleY + 2;
+        } else {
+            const startX = a.x + a.w / 2;
+            const endX = b.x - b.w / 2;
+            const middleX = (startX + endX) / 2;
+            path = `M ${startX} ${a.y} C ${middleX} ${a.y}, ${middleX} ${b.y}, ${endX} ${b.y}`;
+            labelX = middleX + 12;
+            labelY = b.y + (a.y - b.y) * 0.15 - 16;
+        }
+        const labelWidth = Math.max(50, edge.label.length * (compact ? 9 : 8.5) + 20);
+        return `<g class="edge ${edge.active ? "active" : "idle"}">
+            <path id="route-${index}" ${edge.trace && edge.active ? 'data-trace="true"' : ""} d="${path}" fill="none" ${edge.dashed ? 'stroke-dasharray="5 6"' : ""} marker-end="url(#arrow-${edge.active ? "active" : "idle"})"/>
+            ${edge.label ? `<rect class="edge-label-bg" x="${labelX - labelWidth / 2}" y="${labelY - 14}" width="${labelWidth}" height="26" rx="8"/><text class="edge-label" x="${labelX}" y="${labelY + 5}" text-anchor="middle">${escapeText(edge.label)}</text>` : ""}
+        </g>`;
+    }).join("");
+    const nodeMarkup = nodes.map((node) => {
+        const x = node.x - node.w / 2;
+        const y = node.y - node.h / 2;
+        if (node.tone === "note") {
+            return `<g class="diagram-note"><rect x="${x}" y="${y}" width="${node.w}" height="${node.h}" rx="12"/><text x="${node.x}" y="${node.y + 6}" text-anchor="middle" font-size="${compact ? 14 : 17}">${escapeText(node.label)}</text></g>`;
+        }
+        const narrow = node.w < 100;
+        const titleY = node.h <= 80 ? 24 : 29;
+        const tagY = node.h - 28;
+        const tagWidth = Math.min(node.w - 24, node.tag.length * (compact ? 8.6 : 7.6) + 20);
+        return `<g class="node ${node.tone}" transform="translate(${x},${y})">
+            <rect class="node-box" width="${node.w}" height="${node.h}" rx="13"/>
+            <text class="node-title" x="${narrow ? node.w / 2 : 15}" y="${titleY}" ${narrow ? 'text-anchor="middle"' : ""}>${escapeText(node.label)}</text>
+            ${node.detail ? `<text class="node-detail" x="15" y="53">${escapeText(node.detail)}</text>` : ""}
+            <rect class="node-tag" x="${narrow ? (node.w - tagWidth) / 2 : 14}" y="${tagY - 9}" width="${tagWidth}" height="26" rx="7"/>
+            <text class="node-tag-text" x="${narrow ? node.w / 2 : 14 + tagWidth / 2}" y="${tagY + 9}" text-anchor="middle">${escapeText(node.tag)}</text>
+        </g>`;
+    }).join("");
+    const description = `${pattern.name}. Step ${view.step + 1} of ${pattern.steps.length}. ${stage.title}. ${stage.body} ${stage.label}.`;
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="diagram-title diagram-description" xmlns="http://www.w3.org/2000/svg">
+        <title id="diagram-title">${escapeText(pattern.name)} deployment, step ${view.step + 1}</title>
+        <desc id="diagram-description">${escapeText(description)}</desc>
+        <defs>
+            <marker id="arrow-active" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M1 1 L6 3.5 L1 6" fill="none" stroke="#47766a" stroke-width="1.4"/></marker>
+            <marker id="arrow-idle" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M1 1 L6 3.5 L1 6" fill="none" stroke="#a8b4b0" stroke-width="1.4"/></marker>
+        </defs>
+        ${edgeMarkup}
+        <g id="trace-layer" aria-hidden="true"></g>
+        ${nodeMarkup}
+    </svg>`;
+}
+
+
+const boot = globalThis.__EXPLAINER__;
+const byId = (id) => document.getElementById(id);
+const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const compactDiagram = matchMedia("(max-width: 600px)");
+const storageKey = "quiet-deployment-patterns:1";
+let view = patchView(DEFAULT_VIEW, boot.view);
+let playing = false;
+let timer = null;
+let deadline = 0;
+let remaining = view.pace * 1000;
+let trace = null;
+let savedRevision = boot.revision;
+let pendingSaves = 0;
+let deferredFrame = null;
+let saveQueue = Promise.resolve();
+let errorKind = "";
+
+function showError(message, kind = "save") {
+    errorKind = kind;
+    byId("error-message").textContent = message;
+    byId("error-message").hidden = false;
+}
+
+function clearError(kind) {
+    if (errorKind === kind) {
+        byId("error-message").hidden = true;
+        errorKind = "";
+    }
+}
+
+if (!boot.connected) {
+    byId("download-link").href = location.href;
+    try {
+        const saved = localStorage.getItem(storageKey);
+        if (saved) view = patchView(DEFAULT_VIEW, JSON.parse(saved));
+    } catch (error) {
+        showError(`Saved preferences could not be loaded. The opening view is shown instead. ${error.message}`, "load");
+    }
+}
+
+const linkedPattern = new URLSearchParams(location.search).get("pattern");
+if (linkedPattern !== null) {
+    try {
+        view = patchView(view, { pattern: linkedPattern, step: 0 });
+    } catch (error) {
+        showError(`This pattern link is not valid. ${error.message}`, "link");
+    }
+}
+
+function applyRemote(frame) {
+    if (!Number.isInteger(frame.revision) || frame.revision < 0) throw new Error("The saved view has an invalid revision.");
+    if (frame.revision <= savedRevision) return;
+    const next = patchView(DEFAULT_VIEW, frame.view);
+    pausePlayback();
+    if (view.pattern !== next.pattern) document.querySelector(".context").open = false;
+    view = next;
+    savedRevision = frame.revision;
+    remaining = view.pace * 1000;
+    render();
+}
+
+function persist() {
+    const snapshot = { ...view };
+    if (!boot.connected) {
+        try {
+            localStorage.setItem(storageKey, JSON.stringify(snapshot));
+            clearError("save");
+        } catch (error) {
+            showError(`Preferences were not saved. You can keep using this page. ${error.message}`);
+        }
+        return;
+    }
+    pendingSaves += 1;
+    saveQueue = saveQueue.then(async () => {
+        const response = await fetch(new URL("api/view", location.href), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(snapshot),
+        });
+        const frame = await response.json();
+        if (!response.ok) throw new Error(frame.error || `Save failed (${response.status}).`);
+        savedRevision = Math.max(savedRevision, frame.revision);
+        clearError("save");
+    }).catch((error) => {
+        showError(`Your latest view was not saved. ${error.message}`);
+    }).finally(() => {
+        pendingSaves -= 1;
+        if (!pendingSaves && deferredFrame) {
+            const frame = deferredFrame;
+            deferredFrame = null;
+            try { applyRemote(frame); } catch (error) { showError(error.message, "connection"); }
+        }
+    });
+}
+
+function clearTrace() {
+    if (!trace) return;
+    cancelAnimationFrame(trace.frame);
+    trace.marker.remove();
+    trace = null;
+}
+
+function tickTrace(now) {
+    if (!trace?.running) return;
+    if (document.hidden || reducedMotion.matches || !view.motion) {
+        pausePlayback();
+        clearTrace();
+        updateControls();
+        return;
+    }
+    trace.elapsed += Math.max(0, now - trace.lastTime);
+    trace.lastTime = now;
+    const fraction = Math.min(1, trace.elapsed / 2400);
+    const point = trace.path.getPointAtLength(trace.length * fraction);
+    trace.marker.setAttribute("cx", point.x);
+    trace.marker.setAttribute("cy", point.y);
+    if (fraction < 1) {
+        trace.frame = requestAnimationFrame(tickTrace);
+    } else {
+        clearTrace();
+        updateControls();
+    }
+}
+
+function resumeTrace() {
+    if (!trace || reducedMotion.matches || !view.motion || document.hidden) return;
+    trace.running = true;
+    trace.lastTime = performance.now();
+    trace.frame = requestAnimationFrame(tickTrace);
+}
+
+function startTrace() {
+    clearTrace();
+    if (!view.motion || reducedMotion.matches || document.hidden) return;
+    const path = document.querySelector("#diagram [data-trace]");
+    if (!path) return;
+    const marker = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    marker.setAttribute("r", "5");
+    marker.setAttribute("class", "flow-marker");
+    const start = path.getPointAtLength(0);
+    marker.setAttribute("cx", start.x);
+    marker.setAttribute("cy", start.y);
+    byId("trace-layer").append(marker);
+    trace = { path, marker, length: path.getTotalLength(), elapsed: 0, lastTime: performance.now(), frame: 0, running: false };
+    resumeTrace();
+    updateControls();
+}
+
+function pausePlayback() {
+    if (timer !== null) {
+        remaining = Math.max(1, deadline - performance.now());
+        clearTimeout(timer);
+        timer = null;
+    }
+    playing = false;
+    if (trace) {
+        cancelAnimationFrame(trace.frame);
+        trace.running = false;
+    }
+    updateControls();
+}
+
+function changeView(changes, { manual = true, animate = false } = {}) {
+    if (manual) pausePlayback();
+    const previousPattern = view.pattern;
+    view = patchView(view, changes);
+    if (previousPattern !== view.pattern) document.querySelector(".context").open = false;
+    remaining = view.pace * 1000;
+    render();
+    persist();
+    if (animate) startTrace();
+}
+
+function scheduleStep() {
+    deadline = performance.now() + remaining;
+    timer = setTimeout(() => {
+        timer = null;
+        const { stepCount } = getSnapshot(view);
+        if (view.step < stepCount - 1) {
+            changeView({ step: view.step + 1 }, { manual: false, animate: true });
+        }
+        if (view.step === stepCount - 1) {
+            playing = false;
+            updateControls();
+        } else if (playing) {
+            scheduleStep();
+        }
+    }, remaining);
+}
+
+function startPlayback() {
+    if (document.hidden) return;
+    const { stepCount } = getSnapshot(view);
+    if (view.step === stepCount - 1) {
+        changeView({ step: 0 }, { manual: false });
+    }
+    playing = true;
+    resumeTrace();
+    scheduleStep();
+    updateControls();
+}
+
+const playIcon = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 9 6-9 6Z"/></svg>';
+const pauseIcon = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4v12M13 4v12"/></svg>';
+
+function updateControls() {
+    const { stepCount } = getSnapshot(view);
+    const active = playing || Boolean(trace?.running);
+    const last = view.step === stepCount - 1;
+    const label = active ? "Pause" : last ? "Play again" : "Play steps";
+    byId("play").innerHTML = `${active ? pauseIcon : playIcon}<span>${label}</span>`;
+    byId("play").setAttribute("aria-label", active ? "Pause playback and motion" : last ? "Play this pattern again" : "Play steps slowly");
+    byId("play").setAttribute("aria-pressed", String(active));
+    byId("back-step").disabled = view.step === 0;
+    byId("next-step").disabled = last;
+    byId("motion-toggle").checked = view.motion && !reducedMotion.matches;
+    byId("motion-toggle").disabled = reducedMotion.matches;
+    byId("motion-value").textContent = view.motion && !reducedMotion.matches ? "on" : "off";
+    byId("motion-status").textContent = view.motion && !reducedMotion.matches ? "One marker at a time" : "Still diagrams";
+    byId("reduced-motion-note").hidden = !reducedMotion.matches;
+    byId("pace").value = String(view.pace);
+    document.documentElement.dataset.motion = view.motion && !reducedMotion.matches ? "gentle" : "off";
+    byId("playback-note").textContent = playing
+        ? `Playing at ${view.pace} seconds per step. Stops at the end. Escape pauses.`
+        : trace?.running ? "One gentle request trace. Pause or press Escape to stop it."
+        : last ? "End of this pattern. Stay here, or choose another when you are ready."
+        : "Paused. Move through the steps whenever you are ready.";
+}
+
+function render() {
+    clearTrace();
+    const { pattern, stage, stepCount } = getSnapshot(view);
+    const index = PATTERNS.indexOf(pattern);
+    byId("pattern-title").textContent = pattern.name;
+    byId("pattern-category").textContent = pattern.category;
+    byId("pattern-summary").textContent = pattern.summary;
+    byId("pattern-number").textContent = `${String(index + 1).padStart(2, "0")} / 08`;
+    byId("pattern-select").value = pattern.id;
+    byId("previous-pattern").disabled = index === 0;
+    byId("next-pattern").disabled = index === PATTERNS.length - 1;
+    document.querySelectorAll(".pattern-link").forEach((button) => {
+        if (button.dataset.pattern === pattern.id) button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
+    });
+    byId("diagram").innerHTML = renderDiagram(view, compactDiagram.matches);
+    byId("diagram-caption").textContent = stage.label;
+    const legend = pattern.id === "ab" ? ["Variant A", "Variant B"]
+        : pattern.id === "feature-flag" ? ["Feature OFF", "Feature ON"] : ["Current / v1", "New / v2"];
+    byId("legend-current-label").textContent = legend[0];
+    byId("legend-new-label").textContent = legend[1];
+    byId("step-count").textContent = `Step ${view.step + 1} of ${stepCount}`;
+    byId("step-title").textContent = stage.title;
+    byId("step-body").textContent = stage.body;
+    document.querySelectorAll(".step-dot").forEach((button, step) => {
+        button.setAttribute("aria-label", `Step ${step + 1}: ${pattern.steps[step].title}`);
+        if (step === view.step) button.setAttribute("aria-current", "step");
+        else button.removeAttribute("aria-current");
+    });
+    byId("takeaway-text").textContent = pattern.takeaway;
+    byId("useful-text").textContent = pattern.useful;
+    byId("watch-text").textContent = pattern.watch;
+    updateControls();
+}
+
+PATTERNS.forEach((pattern, index) => {
+    const option = document.createElement("option");
+    option.value = pattern.id;
+    option.textContent = `${String(index + 1).padStart(2, "0")}  ${pattern.name}`;
+    byId("pattern-select").append(option);
+    const button = document.createElement("button");
+    button.className = "pattern-link";
+    button.dataset.pattern = pattern.id;
+    const number = document.createElement("span");
+    number.textContent = String(index + 1).padStart(2, "0");
+    button.append(number, document.createTextNode(pattern.name));
+    button.addEventListener("click", () => changeView({ pattern: pattern.id, step: 0 }));
+    byId("pattern-list").append(button);
+});
+
+PATTERNS[0].steps.forEach((_, index) => {
+    const button = document.createElement("button");
+    button.className = "step-dot";
+    button.textContent = String(index + 1);
+    button.addEventListener("click", () => changeView({ step: index }, { animate: true }));
+    byId("step-dots").append(button);
+});
+
+byId("pattern-select").addEventListener("change", (event) => changeView({ pattern: event.target.value, step: 0 }));
+byId("previous-pattern").addEventListener("click", () => {
+    const index = PATTERNS.findIndex((item) => item.id === view.pattern);
+    if (index > 0) changeView({ pattern: PATTERNS[index - 1].id, step: 0 });
+});
+byId("next-pattern").addEventListener("click", () => {
+    const index = PATTERNS.findIndex((item) => item.id === view.pattern);
+    if (index < PATTERNS.length - 1) changeView({ pattern: PATTERNS[index + 1].id, step: 0 });
+});
+byId("back-step").addEventListener("click", () => {
+    if (view.step > 0) changeView({ step: view.step - 1 }, { animate: true });
+});
+byId("next-step").addEventListener("click", () => {
+    if (view.step < getSnapshot(view).stepCount - 1) changeView({ step: view.step + 1 }, { animate: true });
+});
+byId("play").addEventListener("click", () => {
+    if (playing || trace?.running) pausePlayback();
+    else startPlayback();
+});
+byId("motion-toggle").addEventListener("change", (event) => changeView({ motion: event.target.checked }));
+byId("pace").addEventListener("change", (event) => changeView({ pace: Number(event.target.value) }));
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") pausePlayback();
+});
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) pausePlayback();
+});
+reducedMotion.addEventListener("change", () => {
+    pausePlayback();
+    clearTrace();
+    updateControls();
+});
+compactDiagram.addEventListener("change", () => {
+    pausePlayback();
+    render();
+});
+
+render();
+
+if (boot.connected) {
+    const events = new EventSource(new URL("events", location.href));
+    events.onopen = () => clearError("connection");
+    events.onmessage = (event) => {
+        try {
+            const frame = JSON.parse(event.data);
+            if (pendingSaves) deferredFrame = frame;
+            else applyRemote(frame);
+        } catch (error) {
+            showError(`Could not synchronize the saved view. ${error.message}`, "connection");
+        }
+    };
+    events.onerror = () => showError("The local canvas connection was interrupted. Reconnecting; unsaved changes may not persist.", "connection");
+    window.addEventListener("pagehide", () => { pausePlayback(); events.close(); });
+} else {
+    window.addEventListener("pagehide", pausePlayback);
+}
+</script>
+</body>
+</html>

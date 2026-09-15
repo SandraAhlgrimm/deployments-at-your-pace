@@ -1,0 +1,28 @@
+Immutable
+Create fresh instances for the new version instead of changing old ones in place.
+
+Silent walkthrough. Four steps, 15 seconds per step. At most one request marker moves once in each step; no information depends on following it.
+
+00:00:00.000 - 00:00:15.000
+1. Start with the existing instances
+The current infrastructure runs v1 and serves all traffic. It will not be modified into v2.
+Diagram: Existing instances remain unchanged.
+
+00:00:15.000 - 00:00:30.000
+2. Create fresh infrastructure
+Provision new instances from the v2 image. Validate them before they receive live traffic.
+Diagram: New image, new instances.
+
+00:00:30.000 - 00:00:45.000
+3. Move traffic to the new instances
+After validation, route traffic to the fresh v2 instances. The old instances can drain existing requests.
+Diagram: Fresh v2 instances are serving.
+
+00:00:45.000 - 00:01:00.000
+4. Retire the old instances
+Once they are no longer needed, remove the old infrastructure. No existing instance was patched into the new version.
+Diagram: Old instances retired; new instances remain.
+
+Takeaway: Replace the instances; do not patch them in place.
+Useful for: Repeatable, auditable deployments built from a known image or configuration.
+Watch for: Keep persistent data outside disposable instances. Immutable infrastructure can use rolling or blue-green routing.

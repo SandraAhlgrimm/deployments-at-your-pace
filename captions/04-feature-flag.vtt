@@ -1,0 +1,17 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:15.000
+1. Begin without the new feature
+The existing app is running. Neither group can use the feature yet.
+
+00:00:15.000 --> 00:00:30.000
+2. Deploy code with the flag off
+The app now contains the feature code, but its flag is OFF for everyone. There is still no user-visible release.
+
+00:00:30.000 --> 00:00:45.000
+3. Enable it for a selected group
+Turn the flag ON for test users. Everyone runs the deployed app, but only the chosen group sees the feature.
+
+00:00:45.000 --> 00:01:00.000
+4. Release when you are ready
+Enable the flag for everyone. This changes feature availability without requiring another code deployment.

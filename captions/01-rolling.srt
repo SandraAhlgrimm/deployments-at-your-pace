@@ -1,0 +1,19 @@
+1
+00:00:00,000 --> 00:00:15,000
+1. Start with the current version
+All four healthy instances serve v1. The router sends requests to the available instances.
+
+2
+00:00:15,000 --> 00:00:30,000
+2. Replace one instance
+Bring a v2 instance into service after it is healthy. The other three still run v1.
+
+3
+00:00:30,000 --> 00:00:45,000
+3. Continue in small batches
+After health checks pass, replace another instance. Both versions continue serving requests.
+
+4
+00:00:45,000 --> 00:01:00,000
+4. Finish the rollout
+The remaining instances are replaced. Every healthy instance now serves v2.
