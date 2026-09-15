@@ -1,0 +1,19 @@
+1
+00:00:00,000 --> 00:00:15,000
+1. Assign stable groups
+Assign users to A or B. The example uses equal groups, but the split can be different.
+
+2
+00:00:15,000 --> 00:00:30,000
+2. Group A gets experience A
+Users assigned to A keep seeing variant A. Record the outcome you chose before the experiment.
+
+3
+00:00:30,000 --> 00:00:45,000
+3. Group B gets experience B
+Users assigned to B keep seeing variant B. Measure the same outcome for a fair comparison.
+
+4
+00:00:45,000 --> 00:01:00,000
+4. Compare the outcomes
+Compare the groups with an appropriate analysis. This diagram does not assume that either variant wins.

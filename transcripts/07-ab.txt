@@ -1,0 +1,28 @@
+A/B
+Give stable user groups different experiences and compare a chosen outcome.
+
+Silent walkthrough. Four steps, 15 seconds per step. At most one request marker moves once in each step; no information depends on following it.
+
+00:00:00.000 - 00:00:15.000
+1. Assign stable groups
+Assign users to A or B. The example uses equal groups, but the split can be different.
+Diagram: Stable assignment, not random on every request.
+
+00:00:15.000 - 00:00:30.000
+2. Group A gets experience A
+Users assigned to A keep seeing variant A. Record the outcome you chose before the experiment.
+Diagram: Group A stays with variant A.
+
+00:00:30.000 - 00:00:45.000
+3. Group B gets experience B
+Users assigned to B keep seeing variant B. Measure the same outcome for a fair comparison.
+Diagram: Group B stays with variant B.
+
+00:00:45.000 - 00:01:00.000
+4. Compare the outcomes
+Compare the groups with an appropriate analysis. This diagram does not assume that either variant wins.
+Diagram: Compare evidence before choosing a winner.
+
+Takeaway: An experiment about outcomes, not just rollout safety.
+Useful for: Learning how two experiences affect a defined metric, such as task completion.
+Watch for: Keep assignments stable, choose the metric in advance, and allow enough data for a reliable comparison.

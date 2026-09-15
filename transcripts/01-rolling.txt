@@ -1,0 +1,28 @@
+Rolling
+Update instances gradually, while the service stays available.
+
+Silent walkthrough. Four steps, 15 seconds per step. At most one request marker moves once in each step; no information depends on following it.
+
+00:00:00.000 - 00:00:15.000
+1. Start with the current version
+All four healthy instances serve v1. The router sends requests to the available instances.
+Diagram: 0 of 4 instances updated.
+
+00:00:15.000 - 00:00:30.000
+2. Replace one instance
+Bring a v2 instance into service after it is healthy. The other three still run v1.
+Diagram: 1 of 4 instances updated.
+
+00:00:30.000 - 00:00:45.000
+3. Continue in small batches
+After health checks pass, replace another instance. Both versions continue serving requests.
+Diagram: 2 of 4 instances updated.
+
+00:00:45.000 - 00:01:00.000
+4. Finish the rollout
+The remaining instances are replaced. Every healthy instance now serves v2.
+Diagram: 4 of 4 instances updated.
+
+Takeaway: Old and new versions coexist during the rollout.
+Useful for: Routine service updates when you do not need a second complete environment.
+Watch for: Versions must work together. Use readiness checks and keep enough healthy capacity.

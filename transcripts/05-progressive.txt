@@ -1,0 +1,28 @@
+Progressive
+Increase exposure in stages, using checks to decide what happens next.
+
+Silent walkthrough. Four steps, 15 seconds per step. At most one request marker moves once in each step; no information depends on following it.
+
+00:00:00.000 - 00:00:15.000
+1. Choose stages and guardrails
+Set the rollout stages and the health conditions required to move between them.
+Diagram: Plan the checks before expanding.
+
+00:00:15.000 - 00:00:30.000
+2. Start with limited exposure
+Give v2 a small share of traffic. Observe errors and latency before allowing another increase.
+Diagram: New version: 5% of traffic.
+
+00:00:30.000 - 00:00:45.000
+3. Let checks decide
+In this example the checks pass, so the controller expands to 25%. A failed check would pause or roll back instead.
+Diagram: New version: 25% of traffic.
+
+00:00:45.000 - 00:01:00.000
+4. Complete a healthy rollout
+Continue through the approved stages until v2 serves everyone. Keep monitoring after promotion.
+Diagram: New version: 100% of traffic.
+
+Takeaway: Measured checks control whether the rollout advances.
+Useful for: Coordinating staged traffic shifts, feature flags, and automated rollout decisions.
+Watch for: Define meaningful thresholds and a tested pause or rollback policy. Automation needs good signals.

@@ -1,0 +1,28 @@
+Shadow
+Send a copy to the new version, but keep user responses on the current one.
+
+Silent walkthrough. Four steps, 15 seconds per step. At most one request marker moves once in each step; no information depends on following it.
+
+00:00:00.000 - 00:00:15.000
+1. Keep the live path on v1
+The current version handles the real request and answers the user. The shadow version is not serving users.
+Diagram: Only v1 answers the user.
+
+00:00:15.000 - 00:00:30.000
+2. Copy a request to v2
+Mirror the request to v2 for observation. This is an additional copy, not a split of the live traffic.
+Diagram: Original to v1; a copy to v2.
+
+00:00:30.000 - 00:00:45.000
+3. Compare privately
+Inspect the shadow output and performance. Its result can be compared internally, but it is not sent to the user.
+Diagram: Observe the copy, not a second user response.
+
+00:00:45.000 - 00:01:00.000
+4. Keep the response boundary
+The user still receives only v1's response. Moving users to v2 would require a separate release decision.
+Diagram: v1 still serves every user response.
+
+Takeaway: Shadow responses are never returned to users.
+Useful for: Observing a new implementation with realistic traffic before letting it serve users.
+Watch for: Isolate or disable side effects in the shadow path. Copies must not charge, email, or mutate live data.

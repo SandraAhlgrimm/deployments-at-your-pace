@@ -1,0 +1,17 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:15.000
+1. Blue serves the live traffic
+The Blue environment runs v1. Green is separate and does not receive live requests.
+
+00:00:15.000 --> 00:00:30.000
+2. Prepare and check Green
+Deploy v2 to Green and test it there. Users still reach Blue.
+
+00:00:30.000 --> 00:00:45.000
+3. Switch the route
+Change the routing configuration to send new live requests to Green. Blue stays available as a standby.
+
+00:00:45.000 --> 00:01:00.000
+4. Keep a rollback window
+Observe Green before retiring Blue. Routing back is an option only if data and other changes remain compatible.
